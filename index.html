@@ -1,8 +1,3 @@
-El problema se debía a la forma en que los botones de la pantalla superpuesta (*overlay*) tenían vinculados sus eventos de clic. Al pulsar «CONTINUAR» para avanzar de nivel, se ejecutaba nuevamente la función `startGame()`, lo que reiniciaba todo el progreso al **Nivel 1**.
-
-A continuación tienes el código corregido. Ahora el avance de nivel funciona correctamente, el progreso se guarda entre etapas y la dificultad se incrementa gradualmente:
-
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
