@@ -1,71 +1,634 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Halloween Jumpscare: La Casa del Miedo</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap');
-:root{--red:#d10d25;--dark:#050506;--muted:#8b858d;--gold:#ffb703}
-*{box-sizing:border-box}
-body{margin:0;background:#020203;color:#ddd;font-family:'Special Elite',monospace;min-height:100vh;overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:30;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
 
-.wrap{max-width:1450px;margin:auto;padding:20px;min-height:100vh;display:grid;grid-template-columns:250px minmax(300px,1fr) 260px;gap:20px;align-items:center}
-h1{font-family:Creepster,cursive;color:var(--red);font-size:clamp(42px,5vw,68px);line-height:.85;text-align:center;text-shadow:0 0 20px #76000b;margin:12px 0 20px}.pumpkin{text-align:center;font-size:42px}
-.tag{text-align:center;color:#777;line-height:1.7;font-size:13px;margin-bottom:25px}
-button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent;border:1px solid #9b0a18;color:#ff3143;padding:15px 8px;font-size:15px;box-shadow:inset 0 0 18px #4a0007;transition:.2s}.btn:hover{background:#64000b;color:white}.minor{display:block;margin:12px auto;background:none;border:0;color:#888;padding:8px}.minor:hover{color:#fff}
-.quote{text-align:center;color:#71101a;font-size:12px;line-height:1.7;margin-top:25px}
+:root {
+  --red: #d10d25;
+  --dark: #050506;
+  --muted: #8b858d;
+  --gold: #ffb703;
+}
 
-.game-shell{min-width:0}.topline{text-align:center;color:#777;font-size:12px;letter-spacing:2px;margin:0 0 12px}
-.scene{height:min(70vh,660px);min-height:410px;position:relative;overflow:hidden;border:1px solid #343037;background:#09090b;cursor:crosshair;isolation:isolate;box-shadow:0 0 40px #000}
-.room{position:absolute;inset:0;background:linear-gradient(90deg,#000,transparent 27%,transparent 72%,#000),linear-gradient(0deg,#020203,transparent 40%,#030304),radial-gradient(ellipse at 50% 52%,#29252b,#101014 45%,#050506 80%);transition:filter .3s}
-.ceiling{position:absolute;top:0;width:100%;height:22%;background:linear-gradient(#020203,#141116);clip-path:polygon(0 0,100% 0,78% 100%,22% 100%)}
-.floor{position:absolute;bottom:0;width:100%;height:36%;background:repeating-linear-gradient(0deg,#09090b 0 22px,#181419 23px 25px);clip-path:polygon(23% 0,77% 0,100% 100%,0 100%)}
-.door{position:absolute;width:29%;height:61%;left:35.5%;top:22%;border:9px ridge #242126;background:linear-gradient(90deg,#050506,#111014 40%,#030304);box-shadow:0 0 0 7px #070708,0 0 35px #000}
-.door:before{content:"";position:absolute;inset:8px;border:2px solid #302a30}.door:after{content:"";position:absolute;right:12%;top:53%;width:9px;height:9px;border-radius:50%;background:#b79a58;box-shadow:0 0 8px #c49b54}
-.window{position:absolute;top:14%;left:8%;width:20%;height:24%;border:7px solid #211e24;background:linear-gradient(130deg,#090c12,#151827 50%,#030305)}.window:before,.window:after{content:"";position:absolute;background:#211e24}.window:before{width:5px;height:100%;left:50%}.window:after{height:5px;width:100%;top:50%}
-.moon{position:absolute;right:10%;top:9%;width:36px;height:36px;border-radius:50%;background:#b9bac0;box-shadow:0 0 22px #7c8098}.moon:after{content:"";position:absolute;left:12px;top:-3px;width:35px;height:35px;border-radius:50%;background:#101116}
+* {
+  box-sizing: border-box;
+}
 
-/* CRIATURA / FANTASMA */
-.ghost{position:absolute;z-index:4;left:50%;top:37%;width:100px;height:160px;transform:translate(-50%,-10%) scale(.3);opacity:0;filter:drop-shadow(0 0 18px #d8d6e5);transition:transform .16s,opacity .12s;pointer-events:auto;cursor:pointer}
-.head{position:absolute;top:0;left:10px;width:80px;height:85px;background:radial-gradient(ellipse at 45% 30%,#d7d4dc,#7c7884 50%,#211e28 78%);border-radius:48% 48% 42% 42%}.bodyghost{position:absolute;top:60px;left:0;width:100px;height:100px;background:linear-gradient(#8b8793,#17151c);clip-path:polygon(20% 0,80% 0,100% 100%,75% 80%,60% 100%,42% 82%,20% 100%,0 85%)}
-.eyes{position:absolute;z-index:2;top:32px;left:25px;width:15px;height:22px;background:#f8e8e8;border-radius:50%;box-shadow:34px 0 #f8e8e8,0 0 15px #ff172a,34px 0 15px #ff172a}.mouth{position:absolute;z-index:3;top:56px;left:40px;width:22px;height:28px;background:#080609;border-radius:50%;box-shadow:inset 0 0 8px #f22}
+body {
+  margin: 0;
+  background: #020203;
+  color: #ddd;
+  font-family: 'Special Elite', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-/* MURCIÉLAGO VOLADOR */
-.bat{position:absolute;z-index:10;width:50px;height:30px;cursor:pointer;transition:transform .08s linear;filter:drop-shadow(0 0 6px rgba(138,43,226,0.5))}
-.bat svg{width:100%;height:100%;fill:#8a2be2}
-.bat-wing-l,.bat-wing-r{transform-origin:center;animation:flap .25s infinite alternate ease-in-out}
-.bat-wing-r{transform-origin:right center}
-@keyframes flap{0%{transform:rotate(0deg) scaleY(1)}100%{transform:rotate(25deg) scaleY(0.6)}}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  opacity: .12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+}
 
-/* DESAFÍOS */
-.target-orb{position:absolute;z-index:9;width:55px;height:55px;border-radius:50%;background:radial-gradient(circle,#ff4d4d,#990000);box-shadow:0 0 20px #ff0000,inset 0 0 10px #fff;border:2px solid #fff;cursor:pointer;animation:pulse .4s infinite alternate;display:none}
-@keyframes pulse{0%{transform:scale(0.85)}100%{transform:scale(1.15)}}
+.wrap {
+  max-width: 1450px;
+  margin: auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 250px minmax(300px, 1fr) 260px;
+  gap: 20px;
+  align-items: center;
+}
 
-.rune-container{position:absolute;z-index:9;top:40%;left:50%;transform:translate(-50%,-50%);display:none;gap:12px;background:rgba(0,0,0,0.85);padding:15px;border:2px solid var(--red);border-radius:8px;box-shadow:0 0 25px #000}
-.rune-btn{width:50px;height:50px;font-size:20px;font-weight:bold;background:#1a1013;color:#ff3143;border:1px solid #7a0d1a;border-radius:6px;cursor:pointer;transition:.1s}
-.rune-btn:hover{background:#38070d;color:#fff}
+h1 {
+  font-family: 'Creepster', cursive;
+  color: var(--red);
+  font-size: clamp(42px, 5vw, 68px);
+  line-height: .85;
+  text-align: center;
+  text-shadow: 0 0 20px #76000b;
+  margin: 12px 0 20px;
+}
 
-.freeze-warning{position:absolute;z-index:9;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;color:#00ffff;text-shadow:0 0 15px #00aaaa;font-family:Creepster,cursive;display:none;pointer-events:none;text-align:center}
+.pumpkin {
+  text-align: center;
+  font-size: 42px;
+}
 
-.scene.lit .room{filter:brightness(1.3)}.scene.lit:after{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(circle at var(--x,50%) var(--y,55%),transparent 0,rgba(0,0,0,.18) 100px,rgba(0,0,0,.91) 230px)}
-.scene.scare{animation:shake .1s 6;background:#350006}.scene.scare .ghost{opacity:1;transform:translate(-50%,-10%) scale(2.1)}.scene.scare .room{filter:brightness(1.7) sepia(.4)}
-.scene.scare:before{content:attr(data-word);position:absolute;z-index:8;top:8%;width:100%;text-align:center;font-family:Creepster,cursive;color:#ff001b;font-size:clamp(45px,7vw,95px);text-shadow:0 0 25px red;animation:flash .13s infinite}
+.tag {
+  text-align: center;
+  color: #777;
+  line-height: 1.7;
+  font-size: 13px;
+  margin-bottom: 25px;
+}
 
-@keyframes shake{0%,100%{transform:translate(0)}25%{transform:translate(8px,-5px)}50%{transform:translate(-8px,5px)}75%{transform:translate(5px,5px)}}
-@keyframes flash{50%{opacity:.25}}
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
 
-.caption{position:absolute;z-index:7;bottom:16px;left:0;right:0;text-align:center;color:#ff8888;font-size:12px;letter-spacing:2px;font-weight:bold}
-.bottom{text-align:center;color:#8e101b;font-size:12px;margin-top:16px;letter-spacing:2px}
-.panel{border:1px solid #341018;padding:15px 12px;margin-bottom:15px;background:linear-gradient(135deg,#080708,#030304);box-shadow:inset 0 0 20px #180006}
-.stitle{text-align:center;color:#e1192e;font-size:13px;letter-spacing:1px}.num{font-family:Creepster,cursive;font-size:47px;color:#b70b1c;text-align:center;line-height:1.2}
-.hearts{text-align:center;font-size:27px;letter-spacing:4px;margin:9px 0 0}.heart{color:#c10d23;text-shadow:0 0 8px #7a000a}.off{color:#39383c;text-shadow:none}
-.instructions h3{color:#d21a2d;font-size:16px;margin:0 0 10px}.instructions p{font-size:11px;line-height:1.5;color:#969098;margin:6px 0}.ready{font-family:Creepster,cursive;text-align:center;color:#b80d20;font-size:31px;border:1px solid #401019;padding:14px 3px}
-.levelbar{height:6px;background:#21191d;margin-top:10px;overflow:hidden}.levelbar span{display:block;height:100%;width:0;background:#d10d25;transition:width .25s}
-.overlay{position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.93);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}.overlay h2{font-family:Creepster,cursive;font-size:clamp(40px,6vw,70px);color:#d10e25;margin:0 0 10px;text-shadow:0 0 22px #7b000d}.overlay p{max-width:430px;line-height:1.8;color:#aaa;font-size:13px}.overlay .btn{max-width:260px;margin-top:12px}.hidden{display:none!important}.status{text-align:center;color:#777;font-size:11px;min-height:17px;margin-top:9px}
+.btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #9b0a18;
+  color: #ff3143;
+  padding: 15px 8px;
+  font-size: 15px;
+  box-shadow: inset 0 0 18px #4a0007;
+  transition: .2s;
+}
 
-@media(max-width:900px){.wrap{grid-template-columns:1fr;max-width:720px;padding:14px;gap:14px}.left{max-width:430px;width:100%;margin:auto}h1{font-size:54px}.tag{margin-bottom:16px}.quote{display:none}.scene{height:55vh;min-height:380px}.right{display:grid;grid-template-columns:1fr 1fr;gap:10px}.panel{margin:0}.instructions{grid-row:span 2}}
-@media(max-width:500px){.scene{height:48vh;min-height:340px}.wrap{padding:10px}.instructions p{font-size:10px}.num{font-size:38px}}
+.btn:hover {
+  background: #64000b;
+  color: white;
+}
+
+.minor {
+  display: block;
+  margin: 12px auto;
+  background: none;
+  border: 0;
+  color: #888;
+  padding: 8px;
+}
+
+.minor:hover {
+  color: #fff;
+}
+
+.quote {
+  text-align: center;
+  color: #71101a;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 25px;
+}
+
+.game-shell {
+  min-width: 0;
+}
+
+.topline {
+  text-align: center;
+  color: #777;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin: 0 0 12px;
+}
+
+.scene {
+  height: min(70vh, 660px);
+  min-height: 410px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #343037;
+  background: #09090b;
+  cursor: crosshair;
+  isolation: isolate;
+  box-shadow: 0 0 40px #000;
+}
+
+.room {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #000, transparent 27%, transparent 72%, #000),
+              linear-gradient(0deg, #020203, transparent 40%, #030304),
+              radial-gradient(ellipse at 50% 52%, #29252b, #101014 45%, #050506 80%);
+  transition: filter .3s;
+}
+
+.ceiling {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 22%;
+  background: linear-gradient(#020203, #141116);
+  clip-path: polygon(0 0, 100% 0, 78% 100%, 22% 100%);
+}
+
+.floor {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 36%;
+  background: repeating-linear-gradient(0deg, #09090b 0 22px, #181419 23px 25px);
+  clip-path: polygon(23% 0, 77% 0, 100% 100%, 0 100%);
+}
+
+.door {
+  position: absolute;
+  width: 29%;
+  height: 61%;
+  left: 35.5%;
+  top: 22%;
+  border: 9px ridge #242126;
+  background: linear-gradient(90deg, #050506, #111014 40%, #030304);
+  box-shadow: 0 0 0 7px #070708, 0 0 35px #000;
+}
+
+.door::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 2px solid #302a30;
+}
+
+.door::after {
+  content: "";
+  position: absolute;
+  right: 12%;
+  top: 53%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #b79a58;
+  box-shadow: 0 0 8px #c49b54;
+}
+
+.window {
+  position: absolute;
+  top: 14%;
+  left: 8%;
+  width: 20%;
+  height: 24%;
+  border: 7px solid #211e24;
+  background: linear-gradient(130deg, #090c12, #151827 50%, #030305);
+}
+
+.window::before, .window::after {
+  content: "";
+  position: absolute;
+  background: #211e24;
+}
+
+.window::before {
+  width: 5px;
+  height: 100%;
+  left: 50%;
+}
+
+.window::after {
+  height: 5px;
+  width: 100%;
+  top: 50%;
+}
+
+.moon {
+  position: absolute;
+  right: 10%;
+  top: 9%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #b9bac0;
+  box-shadow: 0 0 22px #7c8098;
+}
+
+.moon::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: -3px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #101116;
+}
+
+/* ESPECTRO / FANTASMA */
+.ghost {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 37%;
+  width: 100px;
+  height: 160px;
+  transform: translate(-50%, -10%) scale(.3);
+  opacity: 0;
+  filter: drop-shadow(0 0 18px #d8d6e5);
+  transition: transform .16s, opacity .12s;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.head {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 80px;
+  height: 85px;
+  background: radial-gradient(ellipse at 45% 30%, #d7d4dc, #7c7884 50%, #211e28 78%);
+  border-radius: 48% 48% 42% 42%;
+}
+
+.bodyghost {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(#8b8793, #17151c);
+  clip-path: polygon(20% 0, 80% 0, 100% 100%, 75% 80%, 60% 100%, 42% 82%, 20% 100%, 0 85%);
+}
+
+.eyes {
+  position: absolute;
+  z-index: 2;
+  top: 32px;
+  left: 25px;
+  width: 15px;
+  height: 22px;
+  background: #f8e8e8;
+  border-radius: 50%;
+  box-shadow: 34px 0 #f8e8e8, 0 0 15px #ff172a, 34px 0 15px #ff172a;
+}
+
+.mouth {
+  position: absolute;
+  z-index: 3;
+  top: 56px;
+  left: 40px;
+  width: 22px;
+  height: 28px;
+  background: #080609;
+  border-radius: 50%;
+  box-shadow: inset 0 0 8px #f22;
+}
+
+/* MURCIÉLAGO VOLADOR (VIOLETA - VELOCIDAD MODERADA) */
+.bat {
+  position: absolute;
+  z-index: 10;
+  width: 50px;
+  height: 30px;
+  cursor: pointer;
+  transition: transform .08s linear;
+  filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.6));
+}
+
+.bat svg {
+  width: 100%;
+  height: 100%;
+  fill: #8a2be2;
+}
+
+.bat-wing-l, .bat-wing-r {
+  transform-origin: center;
+  animation: flap .28s infinite alternate ease-in-out;
+}
+
+.bat-wing-r {
+  transform-origin: right center;
+}
+
+@keyframes flap {
+  0% { transform: rotate(0deg) scaleY(1); }
+  100% { transform: rotate(25deg) scaleY(0.6); }
+}
+
+/* DESAFÍOS INTERACTIVOS */
+.target-orb {
+  position: absolute;
+  z-index: 9;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff4d4d, #990000);
+  box-shadow: 0 0 20px #ff0000, inset 0 0 10px #fff;
+  border: 2px solid #fff;
+  cursor: pointer;
+  animation: pulse .4s infinite alternate;
+  display: none;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.85); }
+  100% { transform: scale(1.15); }
+}
+
+.rune-container {
+  position: absolute;
+  z-index: 9;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.88);
+  padding: 15px;
+  border: 2px solid var(--red);
+  border-radius: 8px;
+  box-shadow: 0 0 25px #000;
+}
+
+.rune-btn {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  font-weight: bold;
+  background: #1a1013;
+  color: #ff3143;
+  border: 1px solid #7a0d1a;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: .1s;
+}
+
+.rune-btn:hover {
+  background: #38070d;
+  color: #fff;
+}
+
+.freeze-warning {
+  position: absolute;
+  z-index: 9;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  color: #00ffff;
+  text-shadow: 0 0 15px #00aaaa;
+  font-family: 'Creepster', cursive;
+  display: none;
+  pointer-events: none;
+  text-align: center;
+}
+
+.scene.lit .room {
+  filter: brightness(1.3);
+}
+
+.scene.lit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 55%), transparent 0, rgba(0,0,0,.18) 100px, rgba(0,0,0,.91) 230px);
+}
+
+.scene.scare {
+  animation: shake .1s 6;
+  background: #350006;
+}
+
+.scene.scare .ghost {
+  opacity: 1;
+  transform: translate(-50%, -10%) scale(2.1);
+}
+
+.scene.scare .room {
+  filter: brightness(1.7) sepia(.4);
+}
+
+.scene.scare::before {
+  content: attr(data-word);
+  position: absolute;
+  z-index: 8;
+  top: 8%;
+  width: 100%;
+  text-align: center;
+  font-family: 'Creepster', cursive;
+  color: #ff001b;
+  font-size: clamp(45px, 7vw, 95px);
+  text-shadow: 0 0 25px red;
+  animation: flash .13s infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(0); }
+  25% { transform: translate(8px, -5px); }
+  50% { transform: translate(-8px, 5px); }
+  75% { transform: translate(5px, 5px); }
+}
+
+@keyframes flash {
+  50% { opacity: .25; }
+}
+
+.caption {
+  position: absolute;
+  z-index: 7;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #ff8888;
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.bottom {
+  text-align: center;
+  color: #8e101b;
+  font-size: 12px;
+  margin-top: 16px;
+  letter-spacing: 2px;
+}
+
+.panel {
+  border: 1px solid #341018;
+  padding: 15px 12px;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #080708, #030304);
+  box-shadow: inset 0 0 20px #180006;
+}
+
+.stitle {
+  text-align: center;
+  color: #e1192e;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.num {
+  font-family: 'Creepster', cursive;
+  font-size: 47px;
+  color: #b70b1c;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.hearts {
+  text-align: center;
+  font-size: 27px;
+  letter-spacing: 4px;
+  margin: 9px 0 0;
+}
+
+.heart {
+  color: #c10d23;
+  text-shadow: 0 0 8px #7a000a;
+}
+
+.off {
+  color: #39383c;
+  text-shadow: none;
+}
+
+.instructions h3 {
+  color: #d21a2d;
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+.instructions p {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #969098;
+  margin: 6px 0;
+}
+
+.ready {
+  font-family: 'Creepster', cursive;
+  text-align: center;
+  color: #b80d20;
+  font-size: 31px;
+  border: 1px solid #401019;
+  padding: 14px 3px;
+}
+
+.levelbar {
+  height: 6px;
+  background: #21191d;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.levelbar span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: #d10d25;
+  transition: width .25s;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  background: rgba(0, 0, 0, .93);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.overlay h2 {
+  font-family: 'Creepster', cursive;
+  font-size: clamp(40px, 6vw, 70px);
+  color: #d10e25;
+  margin: 0 0 10px;
+  text-shadow: 0 0 22px #7b000d;
+}
+
+.overlay p {
+  max-width: 430px;
+  line-height: 1.8;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.overlay .btn {
+  max-width: 260px;
+  margin-top: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.status {
+  text-align: center;
+  color: #777;
+  font-size: 11px;
+  min-height: 17px;
+  margin-top: 9px;
+}
+
+@media(max-width:900px) {
+  .wrap {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+    padding: 14px;
+    gap: 14px;
+  }
+  .left {
+    max-width: 430px;
+    width: 100%;
+    margin: auto;
+  }
+  h1 { font-size: 54px; }
+  .tag { margin-bottom: 16px; }
+  .quote { display: none; }
+  .scene { height: 55vh; min-height: 380px; }
+  .right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .panel { margin: 0; }
+  .instructions { grid-row: span 2; }
+}
+
+@media(max-width:500px) {
+  .scene { height: 48vh; min-height: 340px; }
+  .wrap { padding: 10px; }
+  .instructions p { font-size: 10px; }
+  .num { font-size: 38px; }
+}
 </style>
 </head>
 <body>
@@ -92,6 +655,7 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
         <div class="floor"></div>
       </div>
       
+      <!-- Criatura -->
       <div class="ghost" id="ghost">
         <div class="head"></div>
         <div class="bodyghost"></div>
@@ -99,6 +663,7 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
         <div class="mouth"></div>
       </div>
 
+      <!-- Murciélago Volador -->
       <div class="bat" id="bat" title="¡Haz clic para bonificación!">
         <svg viewBox="0 0 100 60">
           <path class="bat-wing-l" d="M50 30 C30 10 10 15 0 30 C15 35 25 45 35 35 C42 45 48 40 50 30 Z"/>
@@ -109,12 +674,14 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
         </svg>
       </div>
 
+      <!-- Desafíos -->
       <div class="target-orb" id="targetOrb" title="¡Tócalo rápido!"></div>
       <div class="rune-container" id="runeContainer"></div>
       <div class="freeze-warning" id="freezeWarning">¡NO MUEVAS EL RATÓN!<br>❄ PERMANECE QUIETO ❄</div>
 
       <div class="caption" id="caption">HAZ CLIC EN LA HABITACIÓN PARA ENCENDER LA LINTERNA</div>
 
+      <!-- Modal Overlay -->
       <div class="overlay" id="overlay">
         <h2 id="ovtitle">¿TE ATREVES?</h2>
         <p id="ovp">Cinco niveles. 4 tipos de desafíos. Un murciélago te observa.<br>La casa está esperando…</p>
@@ -157,52 +724,63 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-const scene=$('scene'), overlay=$('overlay'), ghost=$('ghost'), bat=$('bat');
-const targetOrb=$('targetOrb'), runeContainer=$('runeContainer'), freezeWarning=$('freezeWarning');
+const $ = id => document.getElementById(id);
+const scene = $('scene'), overlay = $('overlay'), ghost = $('ghost'), bat = $('bat');
+const targetOrb = $('targetOrb'), runeContainer = $('runeContainer'), freezeWarning = $('freezeWarning');
 
-let running=false, score=0, lives=3, level=1, timeLeft=25;
-let timer=null, spawnTimer=null, scareActive=false, soundOn=true, audioCtx=null;
-let levelScares=0;
+let running = false;
+let score = 0;
+let lives = 3;
+let level = 1;
+let timeLeft = 25;
+let timer = null;
+let spawnTimer = null;
+let scareActive = false;
+let soundOn = true;
+let audioCtx = null;
+let levelScares = 0;
 let currentChallengeType = 'click_ghost'; 
-let runeSequence = [], userRunePos = 0;
-let freezeTimer = null, mouseMovedDuringFreeze = false;
-let nextLevelPending = false; // Control de estado para avanzar nivel
+let runeSequence = [];
+let userRunePos = 0;
+let freezeTimer = null;
+let mouseMovedDuringFreeze = false;
 
-const levels=[
-  {name:'LA CASA ABANDONADA', time:25, delay:[1800,3200], goal:3, challenges:['click_ghost']},
-  {name:'EL SÓTANO MALDITO', time:23, delay:[1500,2800], goal:4, challenges:['click_ghost','target_orb']},
-  {name:'EL BOSQUE DE LAS ALMAS', time:22, delay:[1300,2500], goal:4, challenges:['click_ghost','target_orb','freeze']},
-  {name:'EL HOSPITAL OLVIDADO', time:20, delay:[1100,2200], goal:5, challenges:['click_ghost','target_orb','rune_sequence']},
-  {name:'LA ÚLTIMA HABITACIÓN', time:18, delay:[800,1700], goal:5, challenges:['click_ghost','target_orb','rune_sequence','freeze']}
+const levels = [
+  { name: 'LA CASA ABANDONADA', time: 25, delay: [1800, 3200], goal: 3, challenges: ['click_ghost'] },
+  { name: 'EL SÓTANO MALDITO', time: 23, delay: [1500, 2800], goal: 4, challenges: ['click_ghost', 'target_orb'] },
+  { name: 'EL BOSQUE DE LAS ALMAS', time: 22, delay: [1300, 2500], goal: 4, challenges: ['click_ghost', 'target_orb', 'freeze'] },
+  { name: 'EL HOSPITAL OLVIDADO', time: 20, delay: [1100, 2200], goal: 5, challenges: ['click_ghost', 'target_orb', 'rune_sequence'] },
+  { name: 'LA ÚLTIMA HABITACIÓN', time: 18, delay: [800, 1700], goal: 5, challenges: ['click_ghost', 'target_orb', 'rune_sequence', 'freeze'] }
 ];
 
-function sound(freq=90, duration=.35, type='sawtooth', volume=.1){
-  if(!soundOn) return;
-  try{
-    audioCtx = audioCtx || new(window.AudioContext||window.webkitAudioContext)();
-    let o=audioCtx.createOscillator(), g=audioCtx.createGain();
-    o.type=type;
+function sound(freq = 90, duration = .35, type = 'sawtooth', volume = .1) {
+  if (!soundOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = type;
     o.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(Math.max(20, freq*.3), audioCtx.currentTime+duration);
+    o.frequency.exponentialRampToValueAtTime(Math.max(20, freq * .3), audioCtx.currentTime + duration);
     g.gain.setValueAtTime(volume, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime+duration);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime+duration);
-  }catch(e){}
+    g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + duration);
+  } catch (e) {}
 }
 
-/* MOVIMIENTO DEL MURCIÉLAGO */
-let batX = 50, batY = 50, batVx = 1, batVy = 0.8;
-function animateBat(){
-  if(running){
+/* MURCIÉLAGO VOLADOR CON VELOCIDAD SUAVE */
+let batX = 50, batY = 50, batVx = 0.8, batVy = 0.6;
+function animateBat() {
+  if (running) {
     batX += batVx;
     batY += batVy;
-    if(batX <= 5 || batX >= 88) batVx *= -1;
-    if(batY <= 5 || batY >= 75) batVy *= -1;
+    if (batX <= 5 || batX >= 88) batVx *= -1;
+    if (batY <= 5 || batY >= 75) batVy *= -1;
     
-    if(Math.random() < 0.02) batVx = (Math.random() - 0.5) * 2.5;
-    if(Math.random() < 0.02) batVy = (Math.random() - 0.5) * 2;
+    if (Math.random() < 0.02) batVx = (Math.random() - 0.5) * 2;
+    if (Math.random() < 0.02) batVy = (Math.random() - 0.5) * 1.6;
 
     bat.style.left = batX + '%';
     bat.style.top = batY + '%';
@@ -211,41 +789,48 @@ function animateBat(){
 }
 requestAnimationFrame(animateBat);
 
-bat.addEventListener('click', (e)=>{
+bat.addEventListener('click', (e) => {
   e.stopPropagation();
-  if(!running) return;
+  if (!running) return;
   score += 50;
   sound(600, .25, 'sine', .15);
   $('status').textContent = '🦇 ¡Capturaste al murciélago! +50 PUNTOS';
-  if(lives < 3 && Math.random() > 0.5) {
+  if (lives < 3 && Math.random() > 0.4) {
     lives++;
     $('status').textContent = '🦇 ¡El murciélago te otorgó una VIDA EXTRA!';
   }
-  update();
+  updateUI();
   batX = Math.random() * 80;
   batY = Math.random() * 60;
 });
 
-function update(){
+function updateUI() {
   $('score').textContent = score;
   $('time').textContent = timeLeft;
   $('level').textContent = level + '/5';
-  $('progress').style.width = ((level-1)/5*100) + '%';
-  $('hearts').innerHTML = [0,1,2].map(i=>`<span class="heart ${i>=lives?'off':''}">♥</span>`).join('');
-  $('topline').textContent = 'NIVEL ' + level + ' · ' + levels[level-1].name;
+  $('progress').style.width = ((level - 1) / 4 * 100) + '%';
+  $('hearts').innerHTML = [0, 1, 2].map(i => `<span class="heart ${i >= lives ? 'off' : ''}">♥</span>`).join('');
+  $('topline').textContent = 'NIVEL ' + level + ' · ' + levels[level - 1].name;
 }
 
-function startGame(){
-  clearInterval(timer); clearTimeout(spawnTimer);
-  running = true; score = 0; lives = 3; level = 1; levelScares = 0; scareActive = false; nextLevelPending = false;
-  beginLevel();
+function startGame() {
+  score = 0;
+  lives = 3;
+  level = 1;
+  startCurrentLevel();
 }
 
-function beginLevel(){
-  clearInterval(timer); clearTimeout(spawnTimer);
-  scareActive = false; resetChallenges();
-  let L = levels[level-1];
-  timeLeft = L.time; levelScares = 0; update();
+function startCurrentLevel() {
+  clearInterval(timer);
+  clearTimeout(spawnTimer);
+  running = true;
+  scareActive = false;
+  resetChallenges();
+  
+  let L = levels[level - 1];
+  timeLeft = L.time;
+  levelScares = 0;
+  updateUI();
   
   overlay.classList.add('hidden');
   scene.className = 'scene lit';
@@ -254,27 +839,30 @@ function beginLevel(){
   $('status').textContent = 'Escucha con atención… algo acecha en la sombra.';
   sound(65, .55, 'triangle', .05);
 
-  timer = setInterval(()=>{
-    if(!running) return;
+  timer = setInterval(() => {
+    if (!running) return;
     timeLeft--;
     $('time').textContent = timeLeft;
-    if(timeLeft <= 0){
+    if (timeLeft <= 0) {
       clearInterval(timer);
-      if(levelScares >= L.goal) nextLevel();
-      else endGame(false, 'El tiempo se agotó. La casa te ha atrapado…');
+      if (levelScares >= L.goal) {
+        nextLevel();
+      } else {
+        endGame(false, 'El tiempo se agotó. La casa te ha atrapado…');
+      }
     }
   }, 1000);
 
   scheduleScare();
 }
 
-function scheduleScare(){
-  if(!running || scareActive) return;
-  let L = levels[level-1];
+function scheduleScare() {
+  if (!running || scareActive) return;
+  let L = levels[level - 1];
   spawnTimer = setTimeout(triggerScare, L.delay[0] + Math.random() * (L.delay[1] - L.delay[0]));
 }
 
-function resetChallenges(){
+function resetChallenges() {
   targetOrb.style.display = 'none';
   runeContainer.style.display = 'none';
   freezeWarning.style.display = 'none';
@@ -282,20 +870,20 @@ function resetChallenges(){
   clearTimeout(freezeTimer);
 }
 
-function triggerScare(){
-  if(!running || scareActive) return;
+function triggerScare() {
+  if (!running || scareActive) return;
   scareActive = true;
-  let L = levels[level-1];
+  let L = levels[level - 1];
   currentChallengeType = L.challenges[Math.floor(Math.random() * L.challenges.length)];
   sound(150 + level * 15, .65, 'sawtooth', .2);
 
-  if(currentChallengeType === 'click_ghost'){
+  if (currentChallengeType === 'click_ghost') {
     scene.dataset.word = '¡AHUYÉNTALO!';
     scene.classList.add('scare');
     $('caption').textContent = '¡HAZ CLIC DIRECTO SOBRE EL ESPECTRO!';
     $('status').textContent = '¡Un espectro ha aparecido frente a ti!';
     
-  } else if(currentChallengeType === 'target_orb'){
+  } else if (currentChallengeType === 'target_orb') {
     scene.dataset.word = '¡DESTRUYE EL ORBE!';
     scene.classList.add('scare');
     targetOrb.style.display = 'block';
@@ -304,7 +892,7 @@ function triggerScare(){
     $('caption').textContent = '¡HAZ CLIC EN EL AMULETO ROJO!';
     $('status').textContent = '¡Un sello de sangre amenaza con consumirte!';
 
-  } else if(currentChallengeType === 'rune_sequence'){
+  } else if (currentChallengeType === 'rune_sequence') {
     scene.dataset.word = '¡ROMPE EL HECHIZO!';
     scene.classList.add('scare');
     runeContainer.style.display = 'flex';
@@ -313,45 +901,45 @@ function triggerScare(){
     userRunePos = 0;
     const symbols = ['💀', '⚡', '🔥', '🔮'];
     let count = level >= 4 ? 3 : 2;
-    for(let i=0; i<count; i++){
+    for (let i = 0; i < count; i++) {
       let sym = symbols[Math.floor(Math.random() * symbols.length)];
       runeSequence.push(sym);
       let btn = document.createElement('button');
       btn.className = 'rune-btn';
       btn.textContent = sym;
-      btn.onclick = (e)=>{ e.stopPropagation(); checkRune(sym); };
+      btn.onclick = (e) => { e.stopPropagation(); checkRune(sym); };
       runeContainer.appendChild(btn);
     }
     $('caption').textContent = '¡PULSA LOS SÍMBOLOS EN ORDEN!';
     $('status').textContent = 'Secuencia: ' + runeSequence.join(' ');
 
-  } else if(currentChallengeType === 'freeze'){
+  } else if (currentChallengeType === 'freeze') {
     scene.dataset.word = '¡NO TE MUEVAS!';
     freezeWarning.style.display = 'block';
     mouseMovedDuringFreeze = false;
     $('caption').textContent = '¡MANTÉN EL CURSOR COMPLETAMENTE QUIETO!';
     $('status').textContent = 'Una entidad está escaneando la habitación...';
 
-    freezeTimer = setTimeout(()=>{
-      if(!mouseMovedDuringFreeze && scareActive){
+    freezeTimer = setTimeout(() => {
+      if (!mouseMovedDuringFreeze && scareActive) {
         resolveSuccess('¡Mantuviste la calma a tiempo!');
       }
     }, 1200);
   }
 
-  let timeToReact = Math.max(700, 1400 - (level-1) * 140);
-  spawnTimer = setTimeout(()=>{
-    if(!scareActive || !running) return;
+  let timeToReact = Math.max(700, 1400 - (level - 1) * 140);
+  spawnTimer = setTimeout(() => {
+    if (!scareActive || !running) return;
     resolveFailure('Demasiado lento… el terror te atrapó.');
   }, timeToReact);
 }
 
-function checkRune(symbol){
-  if(!scareActive) return;
-  if(symbol === runeSequence[userRunePos]){
+function checkRune(symbol) {
+  if (!scareActive) return;
+  if (symbol === runeSequence[userRunePos]) {
     userRunePos++;
-    sound(350 + userRunePos*100, .1, 'sine', .12);
-    if(userRunePos >= runeSequence.length){
+    sound(350 + userRunePos * 100, .1, 'sine', .12);
+    if (userRunePos >= runeSequence.length) {
       resolveSuccess('¡Rompiste el hechizo!');
     }
   } else {
@@ -360,9 +948,9 @@ function checkRune(symbol){
   }
 }
 
-scene.addEventListener('mousemove', ()=>{
-  if(scareActive && currentChallengeType === 'freeze'){
-    if(!mouseMovedDuringFreeze){
+scene.addEventListener('mousemove', () => {
+  if (scareActive && currentChallengeType === 'freeze') {
+    if (!mouseMovedDuringFreeze) {
       mouseMovedDuringFreeze = true;
       clearTimeout(freezeTimer);
       resolveFailure('¡Te moviste! La criatura te detectó.');
@@ -370,114 +958,150 @@ scene.addEventListener('mousemove', ()=>{
   }
 });
 
-targetOrb.addEventListener('click', (e)=>{
+targetOrb.addEventListener('click', (e) => {
   e.stopPropagation();
-  if(scareActive && currentChallengeType === 'target_orb'){
+  if (scareActive && currentChallengeType === 'target_orb') {
     resolveSuccess('¡Amuleto destruido!');
   }
 });
 
-ghost.addEventListener('click', (e)=>{
+ghost.addEventListener('click', (e) => {
   e.stopPropagation();
-  if(scareActive && currentChallengeType === 'click_ghost'){
+  if (scareActive && currentChallengeType === 'click_ghost') {
     resolveSuccess('¡Espectro ahuyentado!');
   }
 });
 
-function resolveSuccess(msg){
+function resolveSuccess(msg) {
   clearTimeout(spawnTimer);
   scareActive = false;
   resetChallenges();
   score += 10;
   levelScares++;
-  update();
+  updateUI();
   $('caption').textContent = '¡LOGRADO!';
-  $('status').textContent = msg + ' (' + levelScares + '/' + levels[level-1].goal + ')';
+  $('status').textContent = msg + ' (' + levelScares + '/' + levels[level - 1].goal + ')';
   sound(450, .15, 'sine', .12);
 
-  if(levelScares >= levels[level-1].goal){
-    setTimeout(()=>{ if(running) nextLevel(); }, 600);
+  if (levelScares >= levels[level - 1].goal) {
+    setTimeout(() => { if (running) nextLevel(); }, 600);
   } else {
-    setTimeout(()=>{ if(running) scheduleScare(); }, 600);
+    setTimeout(() => { if (running) scheduleScare(); }, 600);
   }
 }
 
-function resolveFailure(msg){
+function resolveFailure(msg) {
   clearTimeout(spawnTimer);
   scareActive = false;
   resetChallenges();
   lives--;
-  update();
+  updateUI();
   $('status').textContent = msg;
   sound(45, .7, 'sawtooth', .2);
 
-  if(lives <= 0){
+  if (lives <= 0) {
     endGame(false, 'Te quedaste sin vidas. La casa ha ganado…');
   } else {
     scheduleScare();
   }
 }
 
-function clickScene(e){
-  if(!running) return;
+function clickScene(e) {
+  if (!running) return;
   let r = scene.getBoundingClientRect();
   scene.style.setProperty('--x', ((e.clientX - r.left) / r.width * 100) + '%');
   scene.style.setProperty('--y', ((e.clientY - r.top) / r.height * 100) + '%');
   
-  if(!scareActive){
+  if (!scareActive) {
     scene.classList.toggle('lit');
     sound(scene.classList.contains('lit') ? 230 : 70, .1, 'triangle', .04);
     $('caption').textContent = scene.classList.contains('lit') ? 'LA LINTERNA PARPADEA…' : 'LA OSCURIDAD TE RODEA…';
   }
 }
 
-function nextLevel(){
-  if(!running) return;
-  clearInterval(timer); clearTimeout(spawnTimer);
-  if(level >= 5){
-    endGame(true, 'Has superado todos los desafíos. Eres una leyenda del terror…');
+function nextLevel() {
+  if (!running) return;
+  clearInterval(timer);
+  clearTimeout(spawnTimer);
+  
+  if (level >= 5) {
+    endGame(true, 'Has superado todos los desafíos de la casa. Eres una leyenda del terror…');
     return;
   }
+  
   running = false;
   level++;
-  nextLevelPending = true; // Guardamos que estamos pasando de nivel
-  update();
+  updateUI();
+  
   overlay.classList.remove('hidden');
   $('ovtitle').textContent = 'NIVEL ' + level;
-  $('ovp').innerHTML = 'Has sobrevivido… por ahora.<br><strong>' + levels[level-1].name + '</strong>';
-  $('ovp2').textContent = 'Nuevos peligros te esperan. Necesitas ' + levels[level-1].goal + ' aciertos.';
-  $('ovstart').textContent = 'CONTINUAR';
+  $('ovp').innerHTML = 'Has sobrevivido al desafío anterior…<br>Siguiente zona: <strong>' + levels[level - 1].name + '</strong>';
+  $('ovp2').textContent = 'Nuevos peligros te esperan. Necesitas completar ' + levels[level - 1].goal + ' desafíos para avanzar.';
+  $('ovstart').textContent = 'CONTINUAR AL NIVEL ' + level;
   $('ready').textContent = 'SIGUIENTE…';
+  
+  $('ovstart').onclick = () => {
+    $('ovstart').onclick = null;
+    startCurrentLevel();
+  };
 }
 
-function handleOverlayClick(){
-  if(nextLevelPending){
-    nextLevelPending = false;
-    running = true;
-    beginLevel(); // Continúa en el nuevo nivel sin reiniciar score ni level
-  } else {
-    startGame(); // Reinicia el juego desde el Nivel 1
-  }
+function endGame(won, message) {
+  running = false;
+  clearInterval(timer);
+  clearTimeout(spawnTimer);
+  scareActive = false;
+  resetChallenges();
+  
+  overlay.classList.remove('hidden');
+  $('ovtitle').textContent = won ? '¡SOBREVIVISTE!' : 'FIN DEL JUEGO';
+  $('ovp').innerHTML = message + '<br><br><strong>Puntuación final: ' + score + '</strong>';
+  $('ovp2').textContent = won ? 'La casa nunca olvidará tu nombre… ¿te atreves a repetir?' : 'Respira hondo… y vuelve a intentarlo desde el principio.';
+  $('ovstart').textContent = 'JUGAR OTRA VEZ';
+  $('ready').textContent = won ? '¡CAMPEÓN!' : 'FIN DEL JUEGO';
+  $('caption').textContent = 'EL SILENCIO VUELVE A LA CASA';
+  
+  $('ovstart').onclick = () => {
+    $('ovstart').onclick = null;
+    startGame();
+  };
 }
 
-$('start').addEventListener('click', startGame);
-$('ovstart').addEventListener('click', handleOverlayClick);
-scene.addEventListener('click', clickScene);
+$('start').addEventListener('click', () => {
+  startGame();
+});
 
-$('help').addEventListener('click', ()=>{
+$('help').addEventListener('click', () => {
+  let prevRunning = running;
+  running = false;
   overlay.classList.remove('hidden');
   $('ovtitle').textContent = 'CÓMO SOBREVIVIR';
-  $('ovp').innerHTML = 'Supera 5 niveles enfrentando 4 clases distintas de desafíos.<br>¡Haz clic en el murciélago volador para ganar bonificaciones!';
+  $('ovp').innerHTML = 'Supera los 5 niveles enfrentando 4 tipos distintos de desafíos.<br>¡Haz clic en el murciélago volador para ganar bonificaciones!';
   $('ovp2').textContent = 'Permanece atento a las instrucciones en pantalla cuando aparezca una amenaza.';
-  $('ovstart').textContent = 'ENTENDIDO';
-  nextLevelPending = false;
+  $('ovstart').textContent = 'VOLVER AL JUEGO';
+  
+  $('ovstart').onclick = () => {
+    $('ovstart').onclick = null;
+    overlay.classList.add('hidden');
+    if (prevRunning) {
+      running = true;
+    }
+  };
 });
 
-$('sound').addEventListener('click', ()=>{
+$('sound').addEventListener('click', () => {
   soundOn = !soundOn;
   $('sound').textContent = '♫ SONIDO: ' + (soundOn ? 'ACTIVADO' : 'DESACTIVADO');
-  if(soundOn) sound(300, .15, 'sine', .08);
+  if (soundOn) sound(300, .15, 'sine', .08);
 });
+
+scene.addEventListener('click', clickScene);
+
+// Inicio inicial desde el overlay
+$('ovstart').onclick = () => {
+  $('ovstart').onclick = null;
+  startGame();
+};
 </script>
 
 </body>
@@ -485,5 +1109,5 @@ $('sound').addEventListener('click', ()=>{
 
 
 
-   
-      
+
+
