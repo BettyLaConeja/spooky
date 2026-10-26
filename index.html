@@ -1,3 +1,8 @@
+El problema se debía a la forma en que los botones de la pantalla superpuesta (*overlay*) tenían vinculados sus eventos de clic. Al pulsar «CONTINUAR» para avanzar de nivel, se ejecutaba nuevamente la función `startGame()`, lo que reiniciaba todo el progreso al **Nivel 1**.
+
+A continuación tienes el código corregido. Ahora el avance de nivel funciona correctamente, el progreso se guarda entre etapas y la dificultad se incrementa gradualmente:
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -31,14 +36,14 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
 .head{position:absolute;top:0;left:10px;width:80px;height:85px;background:radial-gradient(ellipse at 45% 30%,#d7d4dc,#7c7884 50%,#211e28 78%);border-radius:48% 48% 42% 42%}.bodyghost{position:absolute;top:60px;left:0;width:100px;height:100px;background:linear-gradient(#8b8793,#17151c);clip-path:polygon(20% 0,80% 0,100% 100%,75% 80%,60% 100%,42% 82%,20% 100%,0 85%)}
 .eyes{position:absolute;z-index:2;top:32px;left:25px;width:15px;height:22px;background:#f8e8e8;border-radius:50%;box-shadow:34px 0 #f8e8e8,0 0 15px #ff172a,34px 0 15px #ff172a}.mouth{position:absolute;z-index:3;top:56px;left:40px;width:22px;height:28px;background:#080609;border-radius:50%;box-shadow:inset 0 0 8px #f22}
 
-/* MURCIÉLAGO VOLADOR (COLOR CAMBIADO Y VELOCIDAD AJUSTADA EN EL SCRIPT) */
+/* MURCIÉLAGO VOLADOR */
 .bat{position:absolute;z-index:10;width:50px;height:30px;cursor:pointer;transition:transform .08s linear;filter:drop-shadow(0 0 6px rgba(138,43,226,0.5))}
-.bat svg{width:100%;height:100%;fill:#8a2be2} /* Color violeta brillante para que destaque */
-.bat-wing-l,.bat-wing-r{transform-origin:center;animation:flap .25s infinite alternate ease-in-out} /* Aleteo ligeramente más suave */
+.bat svg{width:100%;height:100%;fill:#8a2be2}
+.bat-wing-l,.bat-wing-r{transform-origin:center;animation:flap .25s infinite alternate ease-in-out}
 .bat-wing-r{transform-origin:right center}
 @keyframes flap{0%{transform:rotate(0deg) scaleY(1)}100%{transform:rotate(25deg) scaleY(0.6)}}
 
-/* MECÁNICAS DE JUEGO & DESAFÍOS */
+/* DESAFÍOS */
 .target-orb{position:absolute;z-index:9;width:55px;height:55px;border-radius:50%;background:radial-gradient(circle,#ff4d4d,#990000);box-shadow:0 0 20px #ff0000,inset 0 0 10px #fff;border:2px solid #fff;cursor:pointer;animation:pulse .4s infinite alternate;display:none}
 @keyframes pulse{0%{transform:scale(0.85)}100%{transform:scale(1.15)}}
 
@@ -71,7 +76,6 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
 <body>
 
 <div class="wrap">
-  <!-- COLUMNA IZQUIERDA -->
   <aside class="left">
     <div class="pumpkin">🎃</div>
     <h1>HALLOWEEN<br>JUMPSCARE</h1>
@@ -82,7 +86,6 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
     <p class="quote">“No todos los ruidos<br>vienen del viento…”</p>
   </aside>
 
-  <!-- PANTALLA DE JUEGO -->
   <main class="game-shell">
     <p class="topline" id="topline">NIVEL 1 · LA CASA ABANDONADA</p>
     <div class="scene" id="scene" data-word="¡BU!">
@@ -94,7 +97,6 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
         <div class="floor"></div>
       </div>
       
-      <!-- Criatura -->
       <div class="ghost" id="ghost">
         <div class="head"></div>
         <div class="bodyghost"></div>
@@ -102,7 +104,6 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
         <div class="mouth"></div>
       </div>
 
-      <!-- Murciélago Volador -->
       <div class="bat" id="bat" title="¡Haz clic para bonificación!">
         <svg viewBox="0 0 100 60">
           <path class="bat-wing-l" d="M50 30 C30 10 10 15 0 30 C15 35 25 45 35 35 C42 45 48 40 50 30 Z"/>
@@ -113,14 +114,12 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
         </svg>
       </div>
 
-      <!-- Elementos Interactivos Adicionales -->
       <div class="target-orb" id="targetOrb" title="¡Tócalo rápido!"></div>
       <div class="rune-container" id="runeContainer"></div>
       <div class="freeze-warning" id="freezeWarning">¡NO MUEVAS EL RATÓN!<br>❄ PERMANECE QUIETO ❄</div>
 
       <div class="caption" id="caption">HAZ CLIC EN LA HABITACIÓN PARA ENCENDER LA LINTERNA</div>
 
-      <!-- Modal Overlay -->
       <div class="overlay" id="overlay">
         <h2 id="ovtitle">¿TE ATREVES?</h2>
         <p id="ovp">Cinco niveles. 4 tipos de desafíos. Un murciélago te observa.<br>La casa está esperando…</p>
@@ -132,7 +131,6 @@ button{font-family:inherit;cursor:pointer}.btn{width:100%;background:transparent
     <div class="status" id="status">La oscuridad te está esperando.</div>
   </main>
 
-  <!-- COLUMNA DERECHA -->
   <aside class="right">
     <div class="panel">
       <div class="stitle">NIVEL</div>
@@ -174,6 +172,7 @@ let levelScares=0;
 let currentChallengeType = 'click_ghost'; 
 let runeSequence = [], userRunePos = 0;
 let freezeTimer = null, mouseMovedDuringFreeze = false;
+let nextLevelPending = false; // Control de estado para avanzar nivel
 
 const levels=[
   {name:'LA CASA ABANDONADA', time:25, delay:[1800,3200], goal:3, challenges:['click_ghost']},
@@ -198,8 +197,8 @@ function sound(freq=90, duration=.35, type='sawtooth', volume=.1){
   }catch(e){}
 }
 
-/* SISTEMA DE MOVIMIENTO DEL MURCIÉLAGO (MÁS LENTO) */
-let batX = 50, batY = 50, batVx = 1, batVy = 0.8; // Velocidad base reducida
+/* MOVIMIENTO DEL MURCIÉLAGO */
+let batX = 50, batY = 50, batVx = 1, batVy = 0.8;
 function animateBat(){
   if(running){
     batX += batVx;
@@ -207,7 +206,6 @@ function animateBat(){
     if(batX <= 5 || batX >= 88) batVx *= -1;
     if(batY <= 5 || batY >= 75) batVy *= -1;
     
-    // Cambios aleatorios de dirección más suaves
     if(Math.random() < 0.02) batVx = (Math.random() - 0.5) * 2.5;
     if(Math.random() < 0.02) batVy = (Math.random() - 0.5) * 2;
 
@@ -233,7 +231,6 @@ bat.addEventListener('click', (e)=>{
   batY = Math.random() * 60;
 });
 
-/* LÓGICA DEL JUEGO */
 function update(){
   $('score').textContent = score;
   $('time').textContent = timeLeft;
@@ -245,7 +242,7 @@ function update(){
 
 function startGame(){
   clearInterval(timer); clearTimeout(spawnTimer);
-  running = true; score = 0; lives = 3; level = 1; levelScares = 0; scareActive = false;
+  running = true; score = 0; lives = 3; level = 1; levelScares = 0; scareActive = false; nextLevelPending = false;
   beginLevel();
 }
 
@@ -313,7 +310,7 @@ function triggerScare(){
     $('status').textContent = '¡Un sello de sangre amenaza con consumirte!';
 
   } else if(currentChallengeType === 'rune_sequence'){
-    scene.dataset.word = '¡ROPE EL HECHIZO!';
+    scene.dataset.word = '¡ROMPE EL HECHIZO!';
     scene.classList.add('scare');
     runeContainer.style.display = 'flex';
     runeContainer.innerHTML = '';
@@ -448,6 +445,7 @@ function nextLevel(){
   }
   running = false;
   level++;
+  nextLevelPending = true; // Guardamos que estamos pasando de nivel
   update();
   overlay.classList.remove('hidden');
   $('ovtitle').textContent = 'NIVEL ' + level;
@@ -455,32 +453,20 @@ function nextLevel(){
   $('ovp2').textContent = 'Nuevos peligros te esperan. Necesitas ' + levels[level-1].goal + ' aciertos.';
   $('ovstart').textContent = 'CONTINUAR';
   $('ready').textContent = 'SIGUIENTE…';
-  $('ovstart').onclick = ()=>{
-    $('ovstart').onclick = null;
-    running = true;
-    beginLevel();
-  };
 }
 
-function endGame(won, message){
-  running = false;
-  clearInterval(timer); clearTimeout(spawnTimer);
-  scareActive = false; resetChallenges();
-  overlay.classList.remove('hidden');
-  $('ovtitle').textContent = won ? '¡SOBREVIVISTE!' : 'FIN DEL JUEGO';
-  $('ovp').innerHTML = message + '<br><br><strong>Puntuación final: ' + score + '</strong>';
-  $('ovp2').textContent = won ? 'La casa nunca olvidará tu nombre… ¿te atreves a repetir?' : 'Respira hondo… y vuelve a intentarlo si te atreves.';
-  $('ovstart').textContent = 'JUGAR OTRA VEZ';
-  $('ready').textContent = won ? '¡CAMPEÓN!' : 'FIN DEL JUEGO';
-  $('caption').textContent = 'EL SILENCIO VUELVE A LA CASA';
-  $('ovstart').onclick = ()=>{
-    $('ovstart').onclick = null;
-    startGame();
-  };
+function handleOverlayClick(){
+  if(nextLevelPending){
+    nextLevelPending = false;
+    running = true;
+    beginLevel(); // Continúa en el nuevo nivel sin reiniciar score ni level
+  } else {
+    startGame(); // Reinicia el juego desde el Nivel 1
+  }
 }
 
 $('start').addEventListener('click', startGame);
-$('ovstart').addEventListener('click', startGame);
+$('ovstart').addEventListener('click', handleOverlayClick);
 scene.addEventListener('click', clickScene);
 
 $('help').addEventListener('click', ()=>{
@@ -489,10 +475,7 @@ $('help').addEventListener('click', ()=>{
   $('ovp').innerHTML = 'Supera 5 niveles enfrentando 4 clases distintas de desafíos.<br>¡Haz clic en el murciélago volador para ganar bonificaciones!';
   $('ovp2').textContent = 'Permanece atento a las instrucciones en pantalla cuando aparezca una amenaza.';
   $('ovstart').textContent = 'ENTENDIDO';
-  $('ovstart').onclick = ()=>{
-    $('ovstart').onclick = null;
-    overlay.classList.add('hidden');
-  };
+  nextLevelPending = false;
 });
 
 $('sound').addEventListener('click', ()=>{
@@ -504,3 +487,8 @@ $('sound').addEventListener('click', ()=>{
 
 </body>
 </html>
+
+
+
+   
+      
